@@ -5,7 +5,8 @@ const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
 const uint8_t LED_PIN    = 13;  // onboard LED (change if you want)
 
 // ---------- Settings ----------
-int THRESHOLD = 1500;            // tune this (see Serial Plotter)
+// int THRESHOLD = 1500;            // tune this (see Serial Plotter)
+int THRESHOLD = 2200;            // for Jack's finger
 // const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
 // const unsigned long SAMPLE_DELAY_MS = 20;   // ~50 Hz sampling
 const unsigned long SAMPLE_DELAY_MS = 40;   // ~25 Hz sampling
