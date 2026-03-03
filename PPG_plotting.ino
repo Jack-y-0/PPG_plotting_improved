@@ -61,7 +61,10 @@ void loop() {
   if (lastBeatMs != 0 && (now - lastBeatMs) > 2500) {
     bpm = 0;
   }
-
+  Serial.print(0); // plot baseline
+  Serial.print(' ');
+  Serial.print(4000);// plot a maximum to prevent auto scaling
+  Serial.print(' ');
   Serial.print(signal);
   Serial.print(' ');
   Serial.print(THRESHOLD);
