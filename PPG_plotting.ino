@@ -6,7 +6,9 @@ const uint8_t LED_PIN    = 13;  // onboard LED (change if you want)
 
 // ---------- Settings ----------
 int THRESHOLD = 1500;            // tune this (see Serial Plotter)
-const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
+// const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
+// const unsigned long SAMPLE_DELAY_MS = 20;   // ~50 Hz sampling
+const unsigned long SAMPLE_DELAY_MS = 40;   // ~25 Hz sampling
 
 // Debounce / sanity limits (BPM range)
 const unsigned long MIN_IBI_MS = 300;   // 200 BPM max
@@ -71,6 +73,5 @@ void loop() {
   Serial.print(' ');
   Serial.println(bpm);
 
-  //delay(SAMPLE_DELAY_MS);
-  delay(10);
+  delay(SAMPLE_DELAY_MS);
 }
