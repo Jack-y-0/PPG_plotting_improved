@@ -5,12 +5,14 @@
 
 // ---------- Pins ----------
 // const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
-const uint8_t SENSOR_PIN = 33;  // GPIO33 proof of concept, breadboard 
+const uint8_t SENSOR_PIN = 32;  // GPIO32 proof of concept, breadboard 
 const uint8_t LED_PIN    = 13;  // onboard LED (change if you want)
 
 // ---------- Settings ----------
 // int THRESHOLD = 1500;            // tune this (see Serial Plotter)
-int THRESHOLD = 2200;            // for Jack's finger
+// int THRESHOLD = 2200;            // for Jack's finger
+const uint8_t Threshold_PIN = 25;
+
 // const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
 // const unsigned long SAMPLE_DELAY_MS = 20;   // ~50 Hz sampling
 const unsigned long SAMPLE_DELAY_MS = 40;   // ~25 Hz sampling
@@ -39,6 +41,7 @@ void loop() {
 
   // Read sensor
   int signal = analogRead(SENSOR_PIN);
+  int THRESHOLD = analogRead(Threshold_PIN);
 
   // LED indicates "above threshold"
   bool above = (signal > THRESHOLD);
@@ -75,6 +78,8 @@ void loop() {
   Serial.print(signal);
   Serial.print(' ');
   Serial.print(THRESHOLD);
+  Serial.print(' ');
+  Serial.print(SENSOR_PIN);
   Serial.print(' ');
   Serial.println(bpm);
 
