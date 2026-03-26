@@ -71,17 +71,15 @@ void loop() {
   if (lastBeatMs != 0 && (now - lastBeatMs) > 2500) {
     bpm = 0;
   }
-  Serial.print(1); // plot baseline
-  Serial.print(' ');
-  Serial.print(4095);// plot a maximum to prevent auto scaling
-  Serial.print(' ');
+  Serial.print("Min:1"); // plot baseline
+  Serial.print(" ");
+  Serial.print("Max:20000");// plot a maximum to prevent auto scaling
+  Serial.print(" Signal:");
   Serial.print(signal);
-  Serial.print(' ');
+  Serial.print(" Threshold:");
   Serial.print(THRESHOLD);
-  Serial.print(' ');
-  Serial.print(SENSOR_PIN);
-  Serial.print(' ');
-  Serial.println(bpm);
+  Serial.print(" BPM:");
+  Serial.println(bpm*100);
 
   delay(SAMPLE_DELAY_MS);
 }
