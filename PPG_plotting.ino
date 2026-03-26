@@ -1,7 +1,11 @@
-#include <Arduino.h>
+#define PROGRAMME_NAME "PPG_plotting"
+
+
+
 
 // ---------- Pins ----------
-const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
+// const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
+const uint8_t SENSOR_PIN = 33;  // GPIO33 proof of concept, breadboard 
 const uint8_t LED_PIN    = 13;  // onboard LED (change if you want)
 
 // ---------- Settings ----------
@@ -64,9 +68,9 @@ void loop() {
   if (lastBeatMs != 0 && (now - lastBeatMs) > 2500) {
     bpm = 0;
   }
-  Serial.print(0); // plot baseline
+  Serial.print(1); // plot baseline
   Serial.print(' ');
-  Serial.print(4000);// plot a maximum to prevent auto scaling
+  Serial.print(4095);// plot a maximum to prevent auto scaling
   Serial.print(' ');
   Serial.print(signal);
   Serial.print(' ');
