@@ -42,6 +42,8 @@ void loop() {
   // Read sensor
   int signal = analogRead(SENSOR_PIN);
   int THRESHOLD = analogRead(Threshold_PIN);
+  float THRESHOLD_EMA = THRESHOLD;
+  int ALPHA = 50;
 
   // LED indicates "above threshold"
   bool above = (signal > THRESHOLD);
@@ -78,6 +80,12 @@ void loop() {
   Serial.print(signal);
   Serial.print(" Threshold:");
   Serial.print(THRESHOLD);
+
+  Serial.print(" EMA:");
+  // return last = alpha * input + (1 - alpha) * last;
+  THRESHOLD_EMA = (ALPHA / 100.0) * signal + ((100 - ALPHA) / 100.0) * THRESHOLD_EMA;
+  Serial.print(THRESHOLD_EMA);
+
   Serial.print(" BPM:");
   Serial.println(bpm*100);
 
