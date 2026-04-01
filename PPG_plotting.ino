@@ -43,10 +43,10 @@ void loop() {
   float signal = (3.3 / 4096.0) * analogRead(SENSOR_PIN); // voltage
   float THRESHOLD = (3.3 / 4096.0) * analogRead(Threshold_PIN); // threshold V
   static float signal_ema = THRESHOLD;
-  float ALPHA = 0.1;
+  float ALPHA = 0.01;
 
   // LED indicates "above threshold"
-  bool above = (signal > THRESHOLD);
+  bool above = (signal > signal_ema); //threshold is replaced with ema
   digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
@@ -87,7 +87,7 @@ void loop() {
   Serial.print(signal_ema);
 
   Serial.print(" BPM:");
-  Serial.println(bpm*100);
+  Serial.println(bpm);
 
   delay(SAMPLE_DELAY_MS);
 }
