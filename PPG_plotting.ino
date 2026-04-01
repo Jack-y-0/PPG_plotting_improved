@@ -40,8 +40,8 @@ void loop() {
   unsigned long now = millis();
 
   // Read sensor
-  int signal = analogRead(SENSOR_PIN);
-  int THRESHOLD = analogRead(Threshold_PIN);
+  float signal = (3.3 / 4096.0) * analogRead(SENSOR_PIN); // voltage
+  float THRESHOLD = (3.3 / 4096.0) * analogRead(Threshold_PIN); // threshold V
   static float signal_ema = THRESHOLD;
   float ALPHA = 0.1;
 
@@ -75,7 +75,7 @@ void loop() {
   }
   Serial.print("Min:1"); // plot baseline
   Serial.print(" ");
-  Serial.print("Max:20000");// plot a maximum to prevent auto scaling
+  Serial.print("Max:3.3");// plot a maximum to prevent auto scaling
   Serial.print(" Signal:");
   Serial.print(signal);
   Serial.print(" Threshold:");
