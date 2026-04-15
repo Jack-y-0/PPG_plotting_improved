@@ -4,7 +4,7 @@
 // const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
 const uint8_t SENSOR_PIN = 32;     // GPIO32 proof of concept, breadboard
 const uint8_t LED_PIN    = 13;     // onboard LED
-const uint8_t Threshold_PIN = 25;
+const uint8_t WIPER_PIN = 25;
 
 // ---------- Settings ----------
 // int THRESHOLD = 1500;            // tune this (see Serial Plotter)
@@ -39,7 +39,7 @@ void loop() {
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
   float signal_v = (3.3 / 4096.0) * rawSignal;                   // signal in volts
-  float threshold_v = (3.3 / 4096.0) * analogRead(Threshold_PIN); // threshold in volts
+  float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN); // threshold in volts
 
   static float signal_ema = threshold_v;
   float ALPHA = 0.01;
@@ -109,11 +109,14 @@ void loop() {
   Serial.print(" EMA:");
   Serial.print(signal_ema);
 
-  Serial.print(" Band1:");
-  Serial.print(band1);
+  Serial.print(" EMA+Offset:");
+  Serial.print(signal_ema + threshold_v);
 
-  Serial.print(" Band2:");
-  Serial.print(band2);
+  // Serial.print(" Band1:");
+  // Serial.print(band1);
+
+  // Serial.print(" Band2:");
+  // Serial.print(band2);
 
   // Serial.print(" BPM:");
   // Serial.println(bpm);
