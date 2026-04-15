@@ -4,7 +4,7 @@
 // const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
 const uint8_t SENSOR_PIN = 32;     // GPIO32 proof of concept, breadboard
 const uint8_t LED_PIN    = 13;     // onboard LED
-const uint8_t Threshold_PIN = 25;
+const uint8_t WIPER_PIN = 25;
 
 // ---------- Settings ----------
 // int THRESHOLD = 1500;            // tune this (see Serial Plotter)
@@ -39,13 +39,13 @@ void loop() {
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
   float signal_v = (3.3 / 4096.0) * rawSignal;                   // signal in volts
-  float threshold_v = (3.3 / 4096.0) * analogRead(Threshold_PIN); // threshold in volts
+  float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN); // threshold in volts
 
   static float signal_ema = threshold_v;
   float ALPHA = 0.01;
 
   // LED indicates "above threshold"
-  bool above = (signal_v > signal_ema);   // threshold replaced by EMA
+  bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
   digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
@@ -78,12 +78,12 @@ void loop() {
   float band2 = 0.0;
 
   // Range 1500–1800 (raw ADC)
-  if (rawSignal >= 1500 && rawSignal <= 1800) {
+  if (rawSignal >= 1900 && rawSignal <= 2000) {
     band1 = signal_v;
   }
 
   // Range 2500–3000 (raw ADC)
-  if (rawSignal >= 2500 && rawSignal <= 3000) {
+  if (rawSignal >= 3000 && rawSignal <= 3400) {
     band2 = signal_v;
   }
 
@@ -91,7 +91,10 @@ void loop() {
   signal_ema = ALPHA * signal_v + (1.0 - ALPHA) * signal_ema;
 
   // Serial Plotter output
-  Serial.print("Min:");
+  Serial.print("BPM:");
+  Serial.print(bpm);
+
+  Serial.print(" Min:");
   Serial.print(1.0);
 
   Serial.print(" Max:");
@@ -106,14 +109,18 @@ void loop() {
   Serial.print(" EMA:");
   Serial.print(signal_ema);
 
-  Serial.print(" Band1:");
-  Serial.print(band1);
+  Serial.print(" EMA+Offset:");
+  Serial.print(signal_ema + threshold_v);
 
-  Serial.print(" Band2:");
-  Serial.print(band2);
+  // Serial.print(" Band1:");
+  // Serial.print(band1);
 
-  Serial.print(" BPM:");
-  Serial.println(bpm);
+  // Serial.print(" Band2:");
+  // Serial.print(band2);
 
+  // Serial.print(" BPM:");
+  // Serial.println(bpm);
+
+  Serial.println();
   delay(SAMPLE_DELAY_MS);
 }
