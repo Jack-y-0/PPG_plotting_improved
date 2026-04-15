@@ -78,12 +78,12 @@ void loop() {
   float band2 = 0.0;
 
   // Range 1500–1800 (raw ADC)
-  if (rawSignal >= 1500 && rawSignal <= 1800) {
+  if (rawSignal >= 1900 && rawSignal <= 2000) {
     band1 = signal_v;
   }
 
   // Range 2500–3000 (raw ADC)
-  if (rawSignal >= 2500 && rawSignal <= 3000) {
+  if (rawSignal >= 3000 && rawSignal <= 3400) {
     band2 = signal_v;
   }
 
@@ -91,7 +91,10 @@ void loop() {
   signal_ema = ALPHA * signal_v + (1.0 - ALPHA) * signal_ema;
 
   // Serial Plotter output
-  Serial.print("Min:");
+  Serial.print("BPM:");
+  Serial.print(bpm);
+
+  Serial.print(" Min:");
   Serial.print(1.0);
 
   Serial.print(" Max:");
@@ -112,8 +115,9 @@ void loop() {
   Serial.print(" Band2:");
   Serial.print(band2);
 
-  Serial.print(" BPM:");
-  Serial.println(bpm);
+  // Serial.print(" BPM:");
+  // Serial.println(bpm);
 
+  Serial.println();
   delay(SAMPLE_DELAY_MS);
 }
