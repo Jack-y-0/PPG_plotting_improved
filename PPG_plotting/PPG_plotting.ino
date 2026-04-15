@@ -45,7 +45,7 @@ void loop() {
   float ALPHA = 0.01;
 
   // LED indicates "above threshold"
-  bool above = (signal_v > signal_ema);   // threshold replaced by EMA
+  bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
   digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
