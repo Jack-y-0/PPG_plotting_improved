@@ -42,6 +42,7 @@ void loop() {
   float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN); // threshold in volts
 
   static float signal_ema = threshold_v;
+  static float emVar = 0;
   float ALPHA = 0.01;
 
   // LED indicates "above threshold"
@@ -89,6 +90,9 @@ void loop() {
 
   // Update EMA
   signal_ema = ALPHA * signal_v + (1.0 - ALPHA) * signal_ema;
+  
+  // emVar = (1-alpha)*emVar + alpha * (signal - EMA)^2
+  emVar = ((1.0-ALPHA) * emVar) + ALPHA * (signal_v - signal_ema) * (signal_v - signal_ema);
 
   // Serial Plotter output
   Serial.print("BPM:");
