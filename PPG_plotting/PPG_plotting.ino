@@ -116,6 +116,9 @@ void loop() {
   Serial.print(" EMA+Offset:");
   Serial.print(signal_ema + threshold_v);
 
+  Serial.print(" emVar:");
+  Serial.print(emVar);
+
   // Serial.print(" Band1:");
   // Serial.print(band1);
 
