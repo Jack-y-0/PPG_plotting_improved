@@ -43,6 +43,8 @@ void loop() {
 
   static float signal_ema = threshold_v;
   static float emVar = 0;
+  static float decayingMax = 0;
+  static float decayingMin = 3.3; // Max for 10-bit ADC
   float ALPHA = 0.01;
 
   // LED indicates "above threshold"
@@ -94,6 +96,20 @@ void loop() {
   // emVar = (1-alpha)*emVar + alpha * (signal - EMA)^2
   emVar = ((1.0-ALPHA) * emVar) + ALPHA * (signal_v - signal_ema) * (signal_v - signal_ema);
 
+  // Update Decaying Max
+  if (signal_v > decayingMax) {
+    decayingMax = signal_v; // Jump to new peak
+  } else {
+    decayingMax -= ALPHA * (decayingMax - signal_v); // Slowly decay
+  }
+
+  // Update Decaying Min
+  if (signal_v < decayingMin) {
+    decayingMin = signal_v; // Jump to new valley
+  } else {
+    decayingMin += ALPHA * (signal_v - decayingMin); // Slowly decay
+  }
+
   // Serial Plotter output
   Serial.print("BPM:");
   Serial.print(bpm);
@@ -107,17 +123,23 @@ void loop() {
   Serial.print(" Signal:");
   Serial.print(signal_v);
 
-  Serial.print(" Threshold:");
-  Serial.print(threshold_v);
+  // Serial.print(" Threshold:");
+  // Serial.print(threshold_v);
 
-  Serial.print(" EMA:");
-  Serial.print(signal_ema);
+  // Serial.print(" EMA:");
+  // Serial.print(signal_ema);
 
   Serial.print(" EMA+Offset:");
   Serial.print(signal_ema + threshold_v);
 
   Serial.print(" emVar:");
   Serial.print(emVar);
+
+  Serial.print(" decayingMax:");
+  Serial.print(decayingMax);
+
+  Serial.print(" decayingMin:");
+  Serial.print(decayingMin);
 
   // Serial.print(" Band1:");
   // Serial.print(band1);
