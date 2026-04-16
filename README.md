@@ -15,8 +15,14 @@ This wiring approximates the "homework II" PWA of Nagham.
 
 ## Results
 Actual Serial Plotter  
-<img width="800" alt="Screenshot 2026-03-26 at 19 45 59" src="https://github.com/user-attachments/assets/b2f25077-10e4-4e59-a96b-f8ed0d9f10e5" />
 
+2026/03/26  
+<img width="800" alt="Screenshot 2026-03-26 at 19 45 59" src="https://github.com/user-attachments/assets/b2f25077-10e4-4e59-a96b-f8ed0d9f10e5" />  
+This serial plot only has 50 points.
+
+2026/04/16  
+<img width="800" alt="Screenshot 2026-04-16 at 19 00 47" src="https://github.com/user-attachments/assets/d1fd4182-452a-4b3c-b840-46b938c9d383" />  
+Changed Arduino IDE to have 500 point serial plot.
 
 ## References: 
 https://documentation.espressif.com/esp32-wroom-32e_esp32-wroom-32ue_datasheet_en.pdf?pubDate=20250908
