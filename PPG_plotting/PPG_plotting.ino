@@ -1,9 +1,18 @@
 #define PROGRAMME_NAME "PPG_plotting"
+#define VERSION " V1 "  /// Adding multiple splash OLED Screens and fixing IP displayed
+//#define MODEL_NAME "Model: BUTTOM"
+#define MODEL_NAME "Model: PPG_PMD"
+#define DEVICE_UNDER_TEST "PPG Breadboard"
+#define LICENSE "GNU Affero General Public License, version 3 "
+#define ORIGIN "UK"
+#define LED_BUILTIN 2
+#define TIME_HIGH 1000
+#define TIME_LOW 500
 
 // ---------- Pins ----------
 // const uint8_t SENSOR_PIN = 15;  // chip physical pin 21
-const uint8_t SENSOR_PIN = 32;     // GPIO32 proof of concept, breadboard
-const uint8_t LED_PIN    = 13;     // onboard LED
+const uint8_t SENSOR_PIN = 32;  // GPIO32 proof of concept, breadboard
+const uint8_t LED_PIN = 13;     // onboard LED
 const uint8_t WIPER_PIN = 25;
 
 // ---------- Settings ----------
@@ -12,18 +21,40 @@ const uint8_t WIPER_PIN = 25;
 
 // const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
 // const unsigned long SAMPLE_DELAY_MS = 20;   // ~50 Hz sampling
-const unsigned long SAMPLE_DELAY_MS = 40;      // ~25 Hz sampling
+const unsigned long SAMPLE_DELAY_MS = 40;  // ~25 Hz sampling
 
 // Debounce / sanity limits (BPM range)
-const unsigned long MIN_IBI_MS = 300;          // 200 BPM max
-const unsigned long MAX_IBI_MS = 2000;         // 30 BPM min
+const unsigned long MIN_IBI_MS = 300;   // 200 BPM max
+const unsigned long MAX_IBI_MS = 2000;  // 30 BPM min
 
 // ---------- State ----------
 bool wasAbove = false;
 unsigned long lastBeatMs = 0;
 int bpm = 0;
 
+float signal_v = 0;
+float threshold_v =0;
+static float signal_ema = threshold_v;
+static float emVar = 0;
+static float decayingMax = 0;
+static float decayingMin = 3.3;  // Max for 10-bit ADC
+float ALPHA = 0.01;
+
+void splashserial() {
+  Serial.println(F("==================================="));
+  Serial.print(PROGRAMME_NAME);
+  Serial.println(VERSION);
+  Serial.println(MODEL_NAME);
+  Serial.println(DEVICE_UNDER_TEST);
+  Serial.print(F("Compiled at: "));
+  Serial.println(F(__DATE__ " " __TIME__));
+  Serial.println(LICENSE);
+  Serial.println(F("==================================="));
+  Serial.println();
+}
+
 void setup() {
+  splashserial();
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
@@ -31,6 +62,8 @@ void setup() {
   Serial.println("PPG BPM on ESP32");
   Serial.println("Tip: Use Tools -> Serial Plotter.");
   Serial.println("Plot: Signal Threshold EMA Band1 Band2 BPM");
+
+  pinMode(LED_BUILTIN, OUTPUT);
 }
 
 void loop() {
@@ -38,18 +71,12 @@ void loop() {
 
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
-  float signal_v = (3.3 / 4096.0) * rawSignal;                   // signal in volts
-  float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN); // threshold in volts
-
-  static float signal_ema = threshold_v;
-  static float emVar = 0;
-  static float decayingMax = 0;
-  static float decayingMin = 3.3; // Max for 10-bit ADC
-  float ALPHA = 0.01;
+  signal_v = (3.3 / 4096.0) * rawSignal;                 // signal in volts
+  float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN);  // threshold in volts
 
   // LED indicates "above threshold"
   // bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
-  bool above = (signal_v > (decayingMin + (0.8 * (decayingMax - decayingMin))));   // minimum + 80% of (max - min)
+  bool above = (signal_v > (decayingMin + (0.8 * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
   digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
@@ -91,25 +118,7 @@ void loop() {
     band2 = signal_v;
   }
 
-  // Update EMA
-  signal_ema = ALPHA * signal_v + (1.0 - ALPHA) * signal_ema;
-  
-  // emVar = (1-alpha)*emVar + alpha * (signal - EMA)^2
-  emVar = ((1.0-ALPHA) * emVar) + ALPHA * (signal_v - signal_ema) * (signal_v - signal_ema);
-
-  // Update Decaying Max
-  if (signal_v > decayingMax) {
-    decayingMax = signal_v; // Jump to new peak
-  } else {
-    decayingMax -= ALPHA * (decayingMax - signal_v); // Slowly decay
-  }
-
-  // Update Decaying Min
-  if (signal_v < decayingMin) {
-    decayingMin = signal_v; // Jump to new valley
-  } else {
-    decayingMin += ALPHA * (signal_v - decayingMin); // Slowly decay
-  }
+  digital_signal_processing(); // EMA decaying max. and min.
 
   // Serial Plotter output
   Serial.print("BPM:");
