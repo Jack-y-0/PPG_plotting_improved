@@ -40,6 +40,8 @@ static float decayingMax = 0;
 static float decayingMin = 3.3;  // Max for 10-bit ADC
 float ALPHA = 0.01;
 
+bool above =0;
+
 void splashserial() {
   Serial.println(F("==================================="));
   Serial.print(PROGRAMME_NAME);
@@ -76,7 +78,7 @@ void loop() {
 
   // LED indicates "above threshold"
   // bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
-  bool above = (signal_v > (decayingMin + (0.8 * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
+  above = (signal_v > (decayingMin + (0.8 * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
   digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
@@ -104,6 +106,7 @@ void loop() {
     bpm = 0;
   }
 
+  // detect_beat();
 
   digital_signal_processing(); // EMA decaying max. and min.
 
