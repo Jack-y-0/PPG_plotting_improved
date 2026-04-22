@@ -104,19 +104,6 @@ void loop() {
     bpm = 0;
   }
 
-  // Signal splitting into two bands for plotting
-  float band1 = 0.0;
-  float band2 = 0.0;
-
-  // Range 1500–1800 (raw ADC)
-  if (rawSignal >= 1900 && rawSignal <= 2000) {
-    band1 = signal_v;
-  }
-
-  // Range 2500–3000 (raw ADC)
-  if (rawSignal >= 3000 && rawSignal <= 3400) {
-    band2 = signal_v;
-  }
 
   digital_signal_processing(); // EMA decaying max. and min.
 
