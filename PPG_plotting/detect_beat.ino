@@ -1,5 +1,9 @@
 void detect_beat(void) {
-  static unsigned long now = millis();
+  unsigned long now = millis();
+  // LED indicates "above threshold"
+  // bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
+  above = (signal_v > (decayingMin + (0.8 * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
+  digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
   if (above && !wasAbove) {
@@ -12,8 +16,8 @@ void detect_beat(void) {
       if (bpm == 0) bpm = newBpm;
       else bpm = (bpm * 3 + newBpm) / 4;
 
-      Serial.print("Beat! BPM=");
-      Serial.println(bpm);
+      // Serial.print("Beat! BPM=");
+      // Serial.println(bpm);
     }
 
     lastBeatMs = now;

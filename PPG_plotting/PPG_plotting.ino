@@ -33,14 +33,14 @@ unsigned long lastBeatMs = 0;
 int bpm = 0;
 
 float signal_v = 0;
-float threshold_v =0;
+float threshold_v = 0;
 static float signal_ema = threshold_v;
 static float emVar = 0;
 static float decayingMax = 0;
 static float decayingMin = 3.3;  // Max for 10-bit ADC
 float ALPHA = 0.01;
 
-bool above =0;
+bool above = 0;
 
 void splashserial() {
   Serial.println(F("==================================="));
@@ -69,48 +69,16 @@ void setup() {
 }
 
 void loop() {
-  unsigned long now = millis();
-
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
-  signal_v = (3.3 / 4096.0) * rawSignal;                 // signal in volts
+  signal_v = (3.3 / 4096.0) * rawSignal;                       // signal in volts
   float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN);  // threshold in volts
+  
+  detect_beat();
 
-  // LED indicates "above threshold"
-  // bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
-  above = (signal_v > (decayingMin + (0.8 * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
-  digitalWrite(LED_PIN, above ? HIGH : LOW);
+  digital_signal_processing();  // EMA decaying max. and min.
 
-  // Beat detection: rising edge across threshold
-  if (above && !wasAbove) {
-    unsigned long ibi = now - lastBeatMs;
-
-    if (lastBeatMs != 0 && ibi >= MIN_IBI_MS && ibi <= MAX_IBI_MS) {
-      int newBpm = (int)(60000UL / ibi);
-
-      // Smooth BPM (reduce jitter)
-      if (bpm == 0) bpm = newBpm;
-      else bpm = (bpm * 3 + newBpm) / 4;
-
-      Serial.print("Beat! BPM=");
-      Serial.println(bpm);
-    }
-
-    lastBeatMs = now;
-  }
-
-  wasAbove = above;
-
-  // If no beats for ~2.5 s, consider "no signal"
-  if (lastBeatMs != 0 && (now - lastBeatMs) > 2500) {
-    bpm = 0;
-  }
-
-  // detect_beat();
-
-  digital_signal_processing(); // EMA decaying max. and min.
-
-  plot_the_data(); 
+  plot_the_data();
 
   delay(SAMPLE_DELAY_MS);
 }

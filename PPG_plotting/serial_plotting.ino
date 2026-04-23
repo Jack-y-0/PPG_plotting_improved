@@ -3,6 +3,9 @@ void plot_the_data(void) {
   Serial.print("BPM:");
   Serial.print(bpm);
 
+  Serial.print(" beat_detect:");
+  Serial.print(above);
+
   Serial.print(" Min:");
   Serial.print(1.0);
 
@@ -18,8 +21,8 @@ void plot_the_data(void) {
   // Serial.print(" EMA:");
   // Serial.print(signal_ema);
 
-  Serial.print(" EMA+Offset:");
-  Serial.print(signal_ema + threshold_v);
+  // Serial.print(" EMA+Offset:");
+  // Serial.print(signal_ema + threshold_v);
 
   Serial.print(" emVar:");
   Serial.print(emVar);
