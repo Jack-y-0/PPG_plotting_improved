@@ -1,3 +1,7 @@
+// ---------- State ----------
+bool wasAbove = false;
+unsigned long lastBeatMs = 0;
+
 void detect_beat(void) {
   unsigned long now = millis();
   // LED indicates "above threshold"
@@ -7,10 +11,10 @@ void detect_beat(void) {
 
   // Beat detection: rising edge across threshold
   if (above && !wasAbove) {
-    unsigned long ibi = now - lastBeatMs;
+    unsigned long ibi = now - lastBeatMs; // inter beat interval
 
     if (lastBeatMs != 0 && ibi >= MIN_IBI_MS && ibi <= MAX_IBI_MS) {
-      int newBpm = (int)(60000UL / ibi);
+      int newBpm = (int)(60000UL / ibi); // BPM = 1 minute / milliseconds per beat
 
       // Smooth BPM (reduce jitter)
       if (bpm == 0) bpm = newBpm;
