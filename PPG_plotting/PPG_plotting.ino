@@ -26,6 +26,8 @@ const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
 const unsigned long MIN_IBI_MS = 300;   // 200 BPM max
 const unsigned long MAX_IBI_MS = 2000;  // 30 BPM min
 
+const unsigned long BaudRate = 115200;
+
 // ---------- State ----------
 int bpm = 0; // this will be calculated from a inter beat interval 
 bool above = 0; // filter signal is above threshold
@@ -36,6 +38,9 @@ static float signal_ema = threshold_v;
 static float emVar = 0;
 static float decayingMax = 0;
 static float decayingMin = 3.3;  // Max for 10-bit ADC
+
+int Max_Vin = 3.3;
+float Max_Resolution_ADC = 4096.0;
 
 void splashserial() {
   Serial.println(F("==================================="));
@@ -54,7 +59,7 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-  Serial.begin(115200);
+  Serial.begin(BaudRate);
   while (!Serial){ // wait for UART0 to initialise
     ;
   }
@@ -65,8 +70,8 @@ void setup() {
 void loop() {
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
-  signal_v = (3.3 / 4096.0) * rawSignal;                       // signal in volts, Convert 12-bit ADC reading to voltage
-  float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN);  // threshold in volts
+  signal_v = (Max_Vin / Max_Resolution_ADC) * rawSignal;                       // signal in volts, Convert 12-bit ADC reading to voltage
+  float threshold_v = (Max_Vin / Max_Resolution_ADC) * analogRead(WIPER_PIN);  // threshold in volts
 
   detect_beat();
 

@@ -1,6 +1,7 @@
 // ---------- State ----------
 bool wasAbove = false;
 unsigned long lastBeatMs = 0;
+unsigned long milliseconds = 1000;
 
 void detect_beat(void) {
   unsigned long now = millis();
@@ -14,7 +15,7 @@ void detect_beat(void) {
     unsigned long ibi = now - lastBeatMs; // inter beat interval
 
     if (lastBeatMs != 0 && ibi >= MIN_IBI_MS && ibi <= MAX_IBI_MS) {
-      int newBpm = (int)(60000UL / ibi); // BPM = 1 minute / milliseconds per beat
+      int newBpm = (int)(60 * milliseconds / ibi); // BPM = 1 minute / milliseconds per beat
 
       // Smooth BPM (reduce jitter)
       if (bpm == 0) bpm = newBpm;
@@ -30,7 +31,7 @@ void detect_beat(void) {
   wasAbove = above;
 
   // If no beats for ~2.5 s, consider "no signal"
-  if (lastBeatMs != 0 && (now - lastBeatMs) > 2500) {
+  if (lastBeatMs != 0 && (now - lastBeatMs) > 2.5 * milliseconds) {
     bpm = 0;
   }
 }
