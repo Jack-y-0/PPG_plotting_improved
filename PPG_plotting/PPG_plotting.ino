@@ -36,7 +36,6 @@ static float signal_ema = threshold_v;
 static float emVar = 0;
 static float decayingMax = 0;
 static float decayingMin = 3.3;  // Max for 10-bit ADC
-float ALPHA = 0.01;
 
 void splashserial() {
   Serial.println(F("==================================="));
@@ -66,7 +65,7 @@ void setup() {
 void loop() {
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
-  signal_v = (3.3 / 4096.0) * rawSignal;                       // signal in volts
+  signal_v = (3.3 / 4096.0) * rawSignal;                       // signal in volts, Convert 12-bit ADC reading to voltage
   float threshold_v = (3.3 / 4096.0) * analogRead(WIPER_PIN);  // threshold in volts
 
   detect_beat();

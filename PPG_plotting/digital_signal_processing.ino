@@ -1,10 +1,11 @@
+float ALPHA = 0.01;
 void digital_signal_processing(void) {
-  // Update EMA
+  // Update EMA, exponential moving average 
   signal_ema = ALPHA * signal_v + (1.0 - ALPHA) * signal_ema;
   
   // emVar = (1-alpha)*emVar + alpha * (signal - EMA)^2
   emVar = ((1.0-ALPHA) * emVar) + ALPHA * (signal_v - signal_ema) * (signal_v - signal_ema);
-
+  // emVar = (1.0-ALPHA) * (emVar + ALPHA * (signal_v - signal_ema) * (signal_v - signal_ema));
   // Update Decaying Max
   if (signal_v > decayingMax) {
     decayingMax = signal_v; // Jump to new peak
