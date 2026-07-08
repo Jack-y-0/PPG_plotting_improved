@@ -1,5 +1,5 @@
 #define PROGRAMME_NAME "PPG_plotting"
-#define VERSION " V1 "  // Adding multiple splash OLED Screens and fixing IP displayed
+#define VERSION " V 0.0.2 "  // removed some magic numbers and changed to semantic versioning
 //#define MODEL_NAME "Model: BUTTOM"
 #define MODEL_NAME "Model: PPG_PMD"
 #define DEVICE_UNDER_TEST "PPG Breadboard"
