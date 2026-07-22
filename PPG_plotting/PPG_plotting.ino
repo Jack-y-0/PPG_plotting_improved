@@ -1,5 +1,5 @@
 #define PROGRAMME_NAME "PPG_plotting"
-#define VERSION " V 0.0.2 "  // removed some magic numbers and changed to semantic versioning
+#define VERSION " V 0.0.3 "  // mask beat detected for high and low emVars. To reject transient signals. 
 //#define MODEL_NAME "Model: BUTTOM"
 #define MODEL_NAME "Model: PPG_PMD"
 #define DEVICE_UNDER_TEST "PPG Breadboard"

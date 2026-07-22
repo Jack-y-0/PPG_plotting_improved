@@ -5,12 +5,16 @@ const unsigned long millsPerSec = 1000;
 const unsigned long secPerMin = 60;
 float noSignalT = 2.5; // signal time(s) for flag: no beat detected
 float percentMinMaxThreshold = 80.0/100.0; // empirically chosen
+// float emVarTheshLow = 0.2; //arbitary value for time being, signal loss: 2-3s, signal aquisition: 4-5s
+float emVarTheshLow = 0.05; //arbitary value for time being, signal loss: 5-6s, signal aquisition: 3s (can be sensitive to noise/ tapping of sensor from steady 0 BPM)
+// float emVarThreshHigh = 1.5; //arbitary value for time being, worked poorly, 1.5 is too high (almost never gets that high)
+float emVarThreshHigh = 1.0; //arbitary value for time being,  
 
 void detect_beat(void) {
   unsigned long now = millis();
   // LED indicates "above threshold"
   // bool above = (signal_v > (signal_ema + threshold_v));   // EMA + offset
-  above = (signal_v > (decayingMin + (percentMinMaxThreshold * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
+  above = (emVar > emVarTheshLow) & (emVar < emVarThreshHigh) & (signal_v > (decayingMin + (percentMinMaxThreshold * (decayingMax - decayingMin))));  // minimum + 80% of (max - min)
   digitalWrite(LED_PIN, above ? HIGH : LOW);
 
   // Beat detection: rising edge across threshold
