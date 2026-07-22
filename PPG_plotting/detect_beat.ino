@@ -8,7 +8,8 @@ float percentMinMaxThreshold = 80.0/100.0; // empirically chosen
 // float emVarTheshLow = 0.2; //arbitary value for time being, signal loss: 2-3s, signal aquisition: 4-5s
 float emVarTheshLow = 0.05; //arbitary value for time being, signal loss: 5-6s, signal aquisition: 3s (can be sensitive to noise/ tapping of sensor from steady 0 BPM)
 // float emVarThreshHigh = 1.5; //arbitary value for time being, worked poorly, 1.5 is too high (almost never gets that high)
-float emVarThreshHigh = 1.0; //arbitary value for time being,  
+float emVarThreshHigh = 1.0; //arbitary value for time being,
+bool signalValid = false; // 
 
 void detect_beat(void) {
   unsigned long now = millis();
@@ -41,5 +42,8 @@ void detect_beat(void) {
   // If no beats for noSignalT (s), consider "no signal"
   if (lastBeatMs != 0 && (now - lastBeatMs) > noSignalT * millsPerSec) {
     bpm = NAN;
+    signalValid = false;
+  } else {
+    signalValid = true;
   }
 }

@@ -1,6 +1,9 @@
 void plot_the_data(void) {
   // Serial Plotter output
-  Serial.print("BPM:");
+  Serial.print("signalValid:");
+  Serial.print(signalValid);
+
+  Serial.print(" BPM:");
   Serial.print(bpm);
 
   Serial.print(" beat_detect:");
