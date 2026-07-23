@@ -1,3 +1,6 @@
+const float DERIVATIVE_SCALE = 100;
+const float SECOND_DERIVATIVE_SCALE = 1000;
+
 void plot_the_data(void) {
   // Serial Plotter output
   Serial.print("signalValid:");
@@ -17,6 +20,12 @@ void plot_the_data(void) {
 
   Serial.print(" Signal:");
   Serial.print(signal_v);
+
+  Serial.print(" Derivative:");
+  Serial.print(derivative * DERIVATIVE_SCALE);
+
+  Serial.print(" 2Derivative:");
+  Serial.print(derivativeSecond * SECOND_DERIVATIVE_SCALE);
 
   // Serial.print(" Threshold:");
   // Serial.print(threshold_v);

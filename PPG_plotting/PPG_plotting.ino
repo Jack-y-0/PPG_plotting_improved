@@ -1,5 +1,5 @@
 #define PROGRAMME_NAME "PPG_plotting"
-#define VERSION " V 0.0.4 "  // added valid signal indicator. 
+#define VERSION " V 0.0.5 "  // now plotting 1st and 2nd derivative. 
 //#define MODEL_NAME "Model: BUTTOM"
 #define MODEL_NAME "Model: PPG_PMD"
 #define DEVICE_UNDER_TEST "PPG Breadboard"
@@ -26,7 +26,7 @@ const unsigned long SAMPLE_DELAY_MS = 10;   // ~100 Hz sampling
 const unsigned long MIN_IBI_MS = 300;   // 200 BPM max
 const unsigned long MAX_IBI_MS = 2000;  // 30 BPM min
 
-const unsigned long BaudRate = 115200;
+const unsigned long BAUD_RATE = 115200;
 
 // ---------- State ----------
 int bpm = 0; // this will be calculated from a inter beat interval 
@@ -59,7 +59,7 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-  Serial.begin(BaudRate);
+  Serial.begin(BAUD_RATE);
   while (!Serial){ // wait for UART0 to initialise
     ;
   }
@@ -67,10 +67,24 @@ void setup() {
   pinMode(LED_BUILTIN, OUTPUT);
 }
 
+unsigned long lastTime = 0;
+float prev_signal_v = 0;
+float derivative = 0;
+float derivativeSecond = 0;
+float prev_derivative = 0;
+
 void loop() {
+  unsigned long currentMillis = millis();
+
+  if (currentMillis - lastTime >= SAMPLE_DELAY_MS) {
   // Read sensor
   int rawSignal = analogRead(SENSOR_PIN);
   signal_v = (Max_Vin / Max_Resolution_ADC) * rawSignal;                       // signal in volts, Convert 12-bit ADC reading to voltage
+  derivative = (signal_v - prev_signal_v) / (SAMPLE_DELAY_MS);
+  derivativeSecond = (derivative - prev_derivative) / (SAMPLE_DELAY_MS);
+  prev_signal_v = signal_v;
+  prev_derivative = derivative;
+  lastTime = currentMillis;
   float threshold_v = (Max_Vin / Max_Resolution_ADC) * analogRead(WIPER_PIN);  // threshold in volts
 
   detect_beat();
@@ -79,5 +93,6 @@ void loop() {
 
   plot_the_data();
 
-  delay(SAMPLE_DELAY_MS);
+  }
+  // delay(SAMPLE_DELAY_MS);
 }
