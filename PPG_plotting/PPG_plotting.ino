@@ -1,5 +1,5 @@
 #define PROGRAMME_NAME "PPG_plotting"
-#define VERSION " V 0.0.5 "  // now plotting 1st and 2nd derivative. 
+#define VERSION " V 0.0.6 "  // specialised plot for 1st and 2nd derivatives. 
 //#define MODEL_NAME "Model: BUTTOM"
 #define MODEL_NAME "Model: PPG_PMD"
 #define DEVICE_UNDER_TEST "PPG Breadboard"
@@ -91,7 +91,8 @@ void loop() {
 
   digital_signal_processing();  // EMA decaying max. and min.
 
-  plot_the_data();
+  // plot_the_data();
+  plot_derivatives();
 
   }
   // delay(SAMPLE_DELAY_MS);

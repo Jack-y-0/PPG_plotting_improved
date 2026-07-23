@@ -21,12 +21,6 @@ void plot_the_data(void) {
   Serial.print(" Signal:");
   Serial.print(signal_v);
 
-  Serial.print(" Derivative:");
-  Serial.print(derivative * DERIVATIVE_SCALE);
-
-  Serial.print(" 2Derivative:");
-  Serial.print(derivativeSecond * SECOND_DERIVATIVE_SCALE);
-
   // Serial.print(" Threshold:");
   // Serial.print(threshold_v);
 
@@ -55,4 +49,30 @@ void plot_the_data(void) {
   // Serial.println(bpm);
 
   Serial.println();
-}
+} //end plot_the_data()
+
+void plot_derivatives(void) {
+  // Serial Plotter output
+  Serial.print("beat_detect:");
+  Serial.print(above);
+
+  Serial.print(" Min:");
+  Serial.print(1.0);
+
+  Serial.print(" Max:");
+  Serial.print(3.3);
+
+  Serial.print(" Signal:");
+  Serial.print(signal_v);
+
+  Serial.print(" Derivative:");
+  Serial.print(derivative * DERIVATIVE_SCALE);
+
+  Serial.print(" 2Derivative:");
+  Serial.print(derivativeSecond * SECOND_DERIVATIVE_SCALE);
+
+  Serial.print(" emVar:");
+  Serial.print(emVar);
+
+  Serial.println();
+} //end plot_the_derivatives()
